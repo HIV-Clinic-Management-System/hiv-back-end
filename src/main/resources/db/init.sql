@@ -84,6 +84,7 @@ CREATE TABLE Appointments (
     Status VARCHAR(50) DEFAULT 'Scheduled',
     PatientCancellationReason NVARCHAR(MAX),
     DoctorCancellationReason NVARCHAR(MAX),
+    AppointmentNotes NVARCHAR(MAX),
     CreatedAt DATETIME2 DEFAULT GETDATE(),
     UpdatedAt DATETIME2 DEFAULT GETDATE()
 );
@@ -128,6 +129,35 @@ CREATE TABLE LoginActivity (
     IsSuccess BIT NOT NULL,
     IPAddress NVARCHAR(45),
     UserAgent NVARCHAR(MAX)
+);
+
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='PatientRecords' AND xtype='U')
+CREATE TABLE PatientRecords (
+    RecordID INT IDENTITY(1,1) PRIMARY KEY,
+    PatientUserID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
+    MedicalHistory NVARCHAR(MAX),
+    Allergies NVARCHAR(MAX),
+    CurrentMedications NVARCHAR(MAX),
+    Notes NVARCHAR(MAX),
+    ProfileImageBase64 NVARCHAR(MAX),
+    CreatedAt DATETIME2 DEFAULT GETDATE(),
+    UpdatedAt DATETIME2 DEFAULT GETDATE()
+);
+
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ARVTreatments' AND xtype='U')
+CREATE TABLE ARVTreatments (
+    ARVTreatmentID INT IDENTITY(1,1) PRIMARY KEY,
+    PatientUserID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
+    DoctorUserID INT FOREIGN KEY REFERENCES Users(UserID),
+    Regimen NVARCHAR(255) NOT NULL,
+    StartDate DATE NOT NULL,
+    EndDate DATE,
+    Adherence NVARCHAR(255),
+    SideEffects NVARCHAR(MAX),
+    Notes NVARCHAR(MAX),
+    ProfileImageBase64 NVARCHAR(MAX),
+    CreatedAt DATETIME2 DEFAULT GETDATE(),
+    UpdatedAt DATETIME2 DEFAULT GETDATE()
 );
 
 -- Insert initial roles if they don't exist
