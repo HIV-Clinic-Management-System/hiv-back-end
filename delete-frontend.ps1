@@ -1,14 +1,13 @@
-# Base frontend directory
-$frontendPath = Join-Path "d:\DATA\Github\hiv-back-end" "frontend"
+# Base directory (root instead of frontend folder)
+$basePath = "d:\DATA\Github\hiv-back-end"
 
 # Frontend directories to remove
 $frontendDirs = @(
     "src",
-    "public",
     "node_modules"
 )
 
-# Frontend config files to remove
+# Frontend files to remove
 $frontendFiles = @(
     "package.json",
     "package-lock.json",
@@ -18,15 +17,13 @@ $frontendFiles = @(
     ".prettierrc",
     ".prettierignore",
     "tsconfig.json",
-    "tailwind.config.js",
-    "postcss.config.js",
-    "babel.config.js",
-    "README.md",
-    "vite.svg"
+    "App.css",
+    "App.jsx",
+    "main.jsx"
 )
 
 # Confirmation before deletion
-Write-Host "This script will delete frontend files and directories from: $frontendPath" -ForegroundColor Yellow
+Write-Host "This script will delete frontend files and directories from: $basePath" -ForegroundColor Yellow
 Write-Host "`nDirectories:" -ForegroundColor Cyan
 $frontendDirs | ForEach-Object { Write-Host "- $_" }
 Write-Host "`nFiles:" -ForegroundColor Cyan
@@ -36,26 +33,20 @@ Write-Host "`nWarning: This action cannot be undone!" -ForegroundColor Red
 $confirm = Read-Host "`nDo you want to proceed? (y/N)"
 
 if ($confirm -eq 'y') {
-    # Check if frontend directory exists
-    if (-not (Test-Path $frontendPath)) {
-        Write-Host "`nFrontend directory not found at: $frontendPath" -ForegroundColor Red
-        exit
-    }
-
     # Remove directories
     foreach ($dir in $frontendDirs) {
-        $path = Join-Path $frontendPath $dir
+        $path = Join-Path $basePath $dir
         if (Test-Path $path) {
-            Write-Host "Removing frontend directory: $dir" -ForegroundColor Yellow
+            Write-Host "Removing directory: $dir" -ForegroundColor Yellow
             Remove-Item -Path $path -Recurse -Force
         }
     }
 
     # Remove files
     foreach ($file in $frontendFiles) {
-        $path = Join-Path $frontendPath $file
+        $path = Join-Path $basePath $file
         if (Test-Path $path) {
-            Write-Host "Removing frontend file: $file" -ForegroundColor Yellow
+            Write-Host "Removing file: $file" -ForegroundColor Yellow
             Remove-Item -Path $path -Force
         }
     }
